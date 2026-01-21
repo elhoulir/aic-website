@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   Search,
   Heart,
   Clock,
@@ -98,9 +100,11 @@ const navigation = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -110,6 +114,38 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  const handleLogoClick = () => {
+    // If already on home page, scroll to top
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleMobileNavClick = (href: string) => {
+    setMobileMenuOpen(false);
+    setMobileExpandedItem(null);
+    // If navigating to home, scroll to top
+    if (href === "/" && pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const toggleMobileExpand = (name: string) => {
+    setMobileExpandedItem(mobileExpandedItem === name ? null : name);
+  };
 
   return (
     <>
@@ -153,7 +189,7 @@ export function Header() {
         <nav className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center group relative h-12">
+            <Link href="/" onClick={handleLogoClick} className="flex items-center group relative h-12">
               {/* Logo for dark background (not scrolled) */}
               <Image
                 src="/images/aic logo.png"
@@ -189,6 +225,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
+                    onClick={item.href === "/" ? handleLogoClick : undefined}
                     className={cn(
                       "flex items-center gap-1 px-3 py-2 rounded-lg font-medium transition-all duration-200 text-sm",
                       isScrolled
@@ -286,7 +323,7 @@ export function Header() {
         </nav>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Full Screen Redesign */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -294,7 +331,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-50 xl:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 xl:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.div
@@ -302,75 +339,131 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-white z-50 xl:hidden overflow-y-auto"
+              className="fixed inset-0 bg-neutral-900 z-50 xl:hidden flex flex-col"
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-xl font-bold text-neutral-900">Menu</h2>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 rounded-lg hover:bg-gray-100"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
+              {/* Sticky Header with Close Button */}
+              <div className="sticky top-0 z-10 bg-neutral-900 border-b border-white/10 px-6 py-4 flex items-center justify-between">
+                <Image
+                  src="/images/aic logo.png"
+                  alt="Australian Islamic Centre"
+                  width={100}
+                  height={40}
+                  className="h-10 w-auto object-contain"
+                />
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="w-6 h-6 text-white" />
+                </button>
+              </div>
 
+              {/* Scrollable Navigation */}
+              <div className="flex-1 overflow-y-auto px-6 py-6">
                 <div className="space-y-1">
                   {navigation.map((item) => (
                     <div key={item.name}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-3 rounded-lg font-medium text-gray-900 hover:text-neutral-900 hover:bg-neutral-100"
-                      >
-                        {item.name}
-                      </Link>
-                      {item.children && (
-                        <div className="ml-4 border-l-2 border-neutral-200 pl-4 space-y-1">
-                          {item.children.map((child) => (
-                            child.external ? (
-                              <a
-                                key={child.name}
-                                href={child.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-green-600 hover:text-green-700"
+                      {item.children ? (
+                        // Item with children - expandable
+                        <>
+                          <button
+                            onClick={() => toggleMobileExpand(item.name)}
+                            className="w-full flex items-center justify-between px-4 py-4 rounded-xl text-white hover:bg-white/10 transition-colors"
+                          >
+                            <span className="text-lg font-semibold">{item.name}</span>
+                            <motion.div
+                              animate={{ rotate: mobileExpandedItem === item.name ? 90 : 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ChevronRight className="w-5 h-5 text-white/60" />
+                            </motion.div>
+                          </button>
+                          <AnimatePresence>
+                            {mobileExpandedItem === item.name && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="overflow-hidden"
                               >
-                                {child.name}
-                                <ExternalLink className="w-3 h-3" />
-                              </a>
-                            ) : (
-                              <Link
-                                key={child.name}
-                                href={child.href}
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="block px-4 py-2 text-sm text-gray-600 hover:text-neutral-900"
-                              >
-                                {child.name}
-                              </Link>
-                            )
-                          ))}
-                        </div>
+                                <div className="ml-4 pl-4 border-l-2 border-lime-500/30 space-y-1 py-2">
+                                  {/* Main page link */}
+                                  <Link
+                                    href={item.href}
+                                    onClick={() => handleMobileNavClick(item.href)}
+                                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-lime-400 hover:bg-white/10 transition-colors"
+                                  >
+                                    <span className="font-medium">View All {item.name}</span>
+                                    <ChevronRight className="w-4 h-4" />
+                                  </Link>
+                                  {/* Children links */}
+                                  {item.children.map((child) => (
+                                    child.external ? (
+                                      <a
+                                        key={child.name}
+                                        href={child.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center justify-between px-4 py-3 rounded-lg text-green-400 hover:bg-white/10 transition-colors"
+                                      >
+                                        <span>{child.name}</span>
+                                        <ExternalLink className="w-4 h-4 text-green-500/60" />
+                                      </a>
+                                    ) : (
+                                      <Link
+                                        key={child.name}
+                                        href={child.href}
+                                        onClick={() => handleMobileNavClick(child.href)}
+                                        className="block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                                      >
+                                        {child.name}
+                                      </Link>
+                                    )
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </>
+                      ) : (
+                        // Item without children - direct link
+                        <Link
+                          href={item.href}
+                          onClick={() => handleMobileNavClick(item.href)}
+                          className="block px-4 py-4 rounded-xl text-lg font-semibold text-white hover:bg-white/10 transition-colors"
+                        >
+                          {item.name}
+                        </Link>
                       )}
                     </div>
                   ))}
                 </div>
+              </div>
 
-                <div className="mt-8 pt-8 border-t border-gray-200">
-                  <Button href="/donate" variant="gold" className="w-full" icon={<Heart className="w-4 h-4" />}>
-                    Make a Donation
-                  </Button>
-                </div>
+              {/* Fixed Footer */}
+              <div className="sticky bottom-0 bg-neutral-900 border-t border-white/10 px-6 py-6 space-y-4">
+                <Button
+                  href="/donate"
+                  variant="gold"
+                  className="w-full py-4 text-lg"
+                  icon={<Heart className="w-5 h-5" />}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Make a Donation
+                </Button>
 
-                <div className="mt-6 space-y-3 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-green-600" />
-                    <span>{aicInfo.address.street}, {aicInfo.address.suburb}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-green-600" />
+                <div className="flex items-center justify-center gap-6 text-sm text-white/60">
+                  <a href={`tel:${aicInfo.phone}`} className="flex items-center gap-2 hover:text-white transition-colors">
+                    <Phone className="w-4 h-4" />
                     <span>{aicInfo.phone}</span>
+                  </a>
+                  <span className="text-white/20">|</span>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>{aicInfo.address.suburb}</span>
                   </div>
                 </div>
               </div>

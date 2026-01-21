@@ -686,22 +686,22 @@ export default function MediaPage() {
                   <FadeIn key={podcast.id} delay={index * 0.1}>
                     <motion.div
                       whileHover={{ x: 8 }}
-                      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all flex items-center gap-6"
+                      className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
                     >
-                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center flex-shrink-0">
-                        <Podcast className="w-8 h-8 text-white" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center flex-shrink-0">
+                        <Podcast className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-gray-900 mb-1">{podcast.title}</h3>
-                        <p className="text-gray-600 text-sm mb-2">{podcast.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{podcast.title}</h3>
+                        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{podcast.description}</p>
+                        <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                           <span>{podcast.duration}</span>
                           <span>•</span>
                           <span>{podcast.date}</span>
                         </div>
                       </div>
-                      <button className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-green-600 hover:bg-green-200 transition-colors">
-                        <Play className="w-5 h-5 ml-0.5" />
+                      <button className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-neutral-100 flex items-center justify-center text-green-600 hover:bg-green-200 transition-colors flex-shrink-0 self-end sm:self-center">
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" />
                       </button>
                     </motion.div>
                   </FadeIn>

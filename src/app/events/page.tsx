@@ -474,10 +474,11 @@ export default function EventsPage() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="text-sm font-medium text-gray-500 py-2">
-                  {day}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center">
+              {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+                <div key={i} className="text-xs sm:text-sm font-medium text-gray-500 py-1 sm:py-2">
+                  <span className="sm:hidden">{day}</span>
+                  <span className="hidden sm:inline">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][i]}</span>
                 </div>
               ))}
               {Array.from({ length: 35 }, (_, i) => {
@@ -514,7 +515,7 @@ export default function EventsPage() {
                 return (
                   <div
                     key={i}
-                    className={`relative py-2 rounded-lg transition-colors ${
+                    className={`relative py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg transition-colors ${
                       isValidDay
                         ? isToday
                           ? "bg-green-600 text-white font-bold"
@@ -528,10 +529,10 @@ export default function EventsPage() {
                   >
                     {isValidDay ? day : ""}
                     {hasEvent && isValidDay && (
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500" />
+                      <div className="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-green-500" />
                     )}
                     {hasRecurringEvent && !hasEvent && isValidDay && (
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-neutral-400" />
+                      <div className="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-neutral-400" />
                     )}
                   </div>
                 );

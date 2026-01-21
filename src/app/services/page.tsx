@@ -167,10 +167,31 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Services Overview - Interactive Cards */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Services Overview - Quick Links on Mobile/Tablet, Cards on Desktop */}
+      <section className="py-8 lg:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* Mobile/Tablet: Compact Quick Links */}
+          <div className="lg:hidden">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {serviceDetails.map((service) => (
+                <a
+                  key={service.id}
+                  href={`#${service.id}`}
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gradient-to-br from-teal-50 to-green-50 border border-teal-100 hover:border-teal-300 hover:shadow-md transition-all"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+                    <service.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900 text-center leading-tight">
+                    {service.title}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Full Service Cards */}
+          <StaggerContainer className="hidden lg:grid lg:grid-cols-4 gap-6">
             {serviceDetails.map((service) => (
               <StaggerItem key={service.id}>
                 <ServiceCard

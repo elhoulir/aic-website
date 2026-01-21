@@ -448,8 +448,8 @@ export function QuickAccessSection() {
           </p>
         </motion.div>
 
-        {/* Mobile Cards - Stacked with tap to expand */}
-        <div className="md:hidden space-y-4">
+        {/* Mobile/Tablet Cards - Stacked with tap to expand */}
+        <div className="lg:hidden space-y-4">
           {accessCards.map((card, index) => (
             <MobileAccessCard
               key={card.id}
@@ -461,8 +461,8 @@ export function QuickAccessSection() {
           ))}
         </div>
 
-        {/* Desktop Cards - Horizontal with hover to expand */}
-        <div className="hidden md:flex gap-4 lg:gap-6">
+        {/* Desktop Cards - Horizontal with hover to expand (1024px and up) */}
+        <div className="hidden lg:flex gap-6">
           {accessCards.map((card, index) => (
             <DesktopAccessCard
               key={card.id}

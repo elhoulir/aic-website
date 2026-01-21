@@ -104,19 +104,19 @@ export default function WorshippersPage() {
             </div>
           </FadeIn>
 
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mb-12">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 md:gap-6 mb-12">
             {prayerList.map((prayer) => (
               <StaggerItem key={prayer.name}>
                 <motion.div
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 text-center"
+                  className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 shadow-lg border border-gray-100 text-center"
                 >
-                  <div className={`w-14 h-14 mx-auto rounded-xl bg-gradient-to-br ${prayer.color} flex items-center justify-center mb-4 shadow-lg`}>
-                    <prayer.icon className="w-7 h-7 text-white" />
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 mx-auto rounded-lg sm:rounded-xl bg-gradient-to-br ${prayer.color} flex items-center justify-center mb-2 sm:mb-3 md:mb-4 shadow-lg`}>
+                    <prayer.icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
                   </div>
-                  <p className="text-teal-600 text-lg font-arabic mb-1">{prayer.arabic}</p>
-                  <h3 className="text-gray-900 font-semibold text-lg mb-3">{prayer.name}</h3>
-                  <div className="space-y-1 text-sm">
+                  <p className="text-teal-600 text-sm sm:text-base md:text-lg font-arabic mb-0.5 sm:mb-1">{prayer.arabic}</p>
+                  <h3 className="text-gray-900 font-semibold text-sm sm:text-base md:text-lg mb-1 sm:mb-2 md:mb-3">{prayer.name}</h3>
+                  <div className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
                     <p className="text-gray-500">Adhan: <span className="font-medium text-gray-700">{prayer.adhan}</span></p>
                     <p className="text-neutral-700 font-bold">Iqamah: {prayer.iqamah}</p>
                   </div>
