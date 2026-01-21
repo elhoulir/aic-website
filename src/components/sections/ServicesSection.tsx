@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/FadeIn";
 import { FeatureCard } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { services } from "@/data/content";
+import { services as fallbackServices } from "@/data/content";
 import {
   ArrowRight,
   Sparkles,
@@ -16,6 +16,17 @@ import {
   HandHeart,
 } from "lucide-react";
 
+interface Service {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+interface ServicesSectionProps {
+  services?: Service[];
+}
+
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   prayer: Sparkles,
   mosque: BookOpen,
@@ -25,7 +36,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   certificate: Award,
 };
 
-export function ServicesSection() {
+export function ServicesSection({ services: cmsServices }: ServicesSectionProps) {
+  const services = cmsServices?.length ? cmsServices : fallbackServices;
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
       {/* Decorative elements */}

@@ -4,16 +4,32 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
-import { programs } from "@/data/content";
+import { programs as fallbackPrograms } from "@/data/content";
 import { ArrowRight, BookOpen, Trophy, Clock, CheckCircle2, GraduationCap, ExternalLink } from "lucide-react";
 import Image from "next/image";
+
+interface Program {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  schedule?: string;
+  features?: string[];
+  externalLink?: string;
+}
+
+interface ProgramsSectionProps {
+  programs?: Program[];
+}
 
 const categoryIcons: Record<string, React.ReactNode> = {
   Education: <BookOpen className="w-4 h-4" />,
   "Sports & Youth": <Trophy className="w-4 h-4" />,
 };
 
-export function ProgramsSection() {
+export function ProgramsSection({ programs: cmsPrograms }: ProgramsSectionProps) {
+  const programs = cmsPrograms?.length ? cmsPrograms : fallbackPrograms;
   const [activeIndex, setActiveIndex] = useState(0);
   const displayPrograms = programs.slice(0, 5);
   const activeProgram = displayPrograms[activeIndex];
@@ -182,7 +198,7 @@ export function ProgramsSection() {
 
                   {/* Features */}
                   <div className="space-y-2.5 mb-6">
-                    {activeProgram.features.slice(0, 4).map((feature) => (
+                    {(activeProgram.features || []).slice(0, 4).map((feature) => (
                       <div key={feature} className="flex items-center gap-3">
                         <CheckCircle2 className="w-4 h-4 text-teal-500 shrink-0" />
                         <span className="text-sm text-neutral-300">{feature}</span>

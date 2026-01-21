@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, Play, ChevronLeft, ChevronRight } from "lucide-react";
-import { aicImages, prayerTimes, jumuahTimes } from "@/data/content";
+import { aicImages, prayerTimes as fallbackPrayerTimes, jumuahTimes as fallbackJumuahTimes } from "@/data/content";
 
 // Hero slides with different images and content
 const heroSlides = [
@@ -46,54 +46,94 @@ const heroSlides = [
   },
 ];
 
+interface PrayerTimeData {
+  name: string;
+  time?: string;
+  iqamah?: string;
+}
+
+interface JumuahTimeData {
+  name?: string;
+  time: string;
+}
+
+interface HeroSectionProps {
+  prayerTimes?: {
+    fajr?: PrayerTimeData;
+    dhuhr?: PrayerTimeData;
+    asr?: PrayerTimeData;
+    maghrib?: PrayerTimeData;
+    isha?: PrayerTimeData;
+  } | null;
+  jumuahTimes?: JumuahTimeData[] | null;
+}
+
 interface PrayerTime {
   name: string;
   time: string;
 }
 
-const prayers: PrayerTime[] = [
-  { name: "Fajr", time: prayerTimes.fajr.iqamah },
-  { name: "Dhuhr", time: prayerTimes.dhuhr.iqamah },
-  { name: "Asr", time: prayerTimes.asr.iqamah },
-  { name: "Maghrib", time: prayerTimes.maghrib.iqamah },
-  { name: "Isha", time: prayerTimes.isha.iqamah },
-];
-
-function getNextPrayer(): { name: string; time: string } {
-  const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const currentTime = currentHour * 60 + currentMinute;
-
-  const parseTime = (timeStr: string): number => {
-    const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
-    if (!match) return 0;
-    let hours = parseInt(match[1]);
-    const minutes = parseInt(match[2]);
-    const period = match[3]?.toUpperCase();
-
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return hours * 60 + minutes;
-  };
-
-  const prayerMinutes = prayers.map(p => ({
-    name: p.name,
-    time: p.time,
-    minutes: parseTime(p.time)
-  }));
-
-  for (const prayer of prayerMinutes) {
-    if (prayer.minutes > currentTime) {
-      return { name: prayer.name, time: prayer.time };
+export function HeroSection({ prayerTimes: cmsPrayerTimes, jumuahTimes: cmsJumuahTimes }: HeroSectionProps) {
+  // Build prayers array from CMS or fallback
+  const prayers: PrayerTime[] = useMemo(() => {
+    if (cmsPrayerTimes) {
+      return [
+        { name: "Fajr", time: cmsPrayerTimes.fajr?.iqamah || cmsPrayerTimes.fajr?.time || fallbackPrayerTimes.fajr.iqamah },
+        { name: "Dhuhr", time: cmsPrayerTimes.dhuhr?.iqamah || cmsPrayerTimes.dhuhr?.time || fallbackPrayerTimes.dhuhr.iqamah },
+        { name: "Asr", time: cmsPrayerTimes.asr?.iqamah || cmsPrayerTimes.asr?.time || fallbackPrayerTimes.asr.iqamah },
+        { name: "Maghrib", time: cmsPrayerTimes.maghrib?.iqamah || cmsPrayerTimes.maghrib?.time || fallbackPrayerTimes.maghrib.iqamah },
+        { name: "Isha", time: cmsPrayerTimes.isha?.iqamah || cmsPrayerTimes.isha?.time || fallbackPrayerTimes.isha.iqamah },
+      ];
     }
-  }
+    return [
+      { name: "Fajr", time: fallbackPrayerTimes.fajr.iqamah },
+      { name: "Dhuhr", time: fallbackPrayerTimes.dhuhr.iqamah },
+      { name: "Asr", time: fallbackPrayerTimes.asr.iqamah },
+      { name: "Maghrib", time: fallbackPrayerTimes.maghrib.iqamah },
+      { name: "Isha", time: fallbackPrayerTimes.isha.iqamah },
+    ];
+  }, [cmsPrayerTimes]);
 
-  return { name: "Fajr", time: prayers[0].time };
-}
+  const jumuahTimes = useMemo(() => {
+    if (cmsJumuahTimes?.length) {
+      return cmsJumuahTimes;
+    }
+    return fallbackJumuahTimes;
+  }, [cmsJumuahTimes]);
 
-export function HeroSection() {
+  const getNextPrayer = useCallback((): { name: string; time: string } => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTime = currentHour * 60 + currentMinute;
+
+    const parseTime = (timeStr: string): number => {
+      const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+      if (!match) return 0;
+      let hours = parseInt(match[1]);
+      const minutes = parseInt(match[2]);
+      const period = match[3]?.toUpperCase();
+
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+
+      return hours * 60 + minutes;
+    };
+
+    const prayerMinutes = prayers.map(p => ({
+      name: p.name,
+      time: p.time,
+      minutes: parseTime(p.time)
+    }));
+
+    for (const prayer of prayerMinutes) {
+      if (prayer.minutes > currentTime) {
+        return { name: prayer.name, time: prayer.time };
+      }
+    }
+
+    return { name: "Fajr", time: prayers[0].time };
+  }, [prayers]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);

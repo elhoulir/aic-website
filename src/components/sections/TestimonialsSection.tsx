@@ -3,11 +3,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeIn } from "@/components/animations/FadeIn";
-import { testimonials } from "@/data/content";
+import { testimonials as fallbackTestimonials } from "@/data/content";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import Image from "next/image";
 
-export function TestimonialsSection() {
+interface Testimonial {
+  id?: string;
+  quote: string;
+  author: string;
+  role?: string;
+  image?: string;
+}
+
+interface TestimonialsSectionProps {
+  testimonials?: Testimonial[];
+}
+
+export function TestimonialsSection({ testimonials: cmsTestimonials }: TestimonialsSectionProps) {
+  const testimonials = cmsTestimonials?.length ? cmsTestimonials : fallbackTestimonials;
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {

@@ -3,12 +3,28 @@
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
-import { upcomingEvents } from "@/data/content";
+import { upcomingEvents as fallbackEvents } from "@/data/content";
 import { ArrowRight, Calendar, Clock, MapPin, Repeat } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  recurring?: boolean;
+}
+
+interface EventsSectionProps {
+  events?: Event[];
+}
 
 // Curated recurring programs to display (3 cards)
 const recurringPrograms = [
@@ -45,7 +61,7 @@ const recurringPrograms = [
 ];
 
 // Dated Event Card - Clean modern design with consistent styling
-function DatedEventCard({ event, index }: { event: typeof upcomingEvents[0]; index: number }) {
+function DatedEventCard({ event, index }: { event: Event; index: number }) {
   const eventDate = new Date(event.date);
 
   return (
@@ -169,7 +185,9 @@ function RecurringCard({ program, index }: { program: typeof recurringPrograms[0
   );
 }
 
-export function EventsSection() {
+export function EventsSection({ events: cmsEvents }: EventsSectionProps) {
+  const upcomingEvents = cmsEvents?.length ? cmsEvents : fallbackEvents;
+
   // Get dated events (non-recurring), sorted by date
   const datedEvents = upcomingEvents
     .filter((e) => !e.recurring)
