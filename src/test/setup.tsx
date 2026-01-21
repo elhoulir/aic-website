@@ -60,3 +60,23 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Mock window.scrollTo
+Object.defineProperty(window, "scrollTo", {
+  writable: true,
+  value: vi.fn(),
+});
+
+// Suppress console errors for jsdom navigation warnings
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  const message = args[0];
+  if (
+    typeof message === "string" &&
+    (message.includes("Not implemented: navigation") ||
+      message.includes("Not implemented: window.scrollTo"))
+  ) {
+    return;
+  }
+  originalConsoleError(...args);
+};
