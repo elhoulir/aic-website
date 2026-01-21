@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(git add:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/rashidelhouli/australian-islamic-centre/src/components/sections",
+      "/Users/rashidelhouli/australian-islamic-centre/src/app/**",
+      "/Users/rashidelhouli/australian-islamic-centre/src/components/ui"
+    ]
+  }
+}
