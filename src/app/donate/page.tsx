@@ -2,10 +2,10 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
-import { Input, Textarea, Select, RadioGroup } from "@/components/ui/Input";
+import { Input, Textarea } from "@/components/ui/Input";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { donationCauses, donationFrequencies, donationAmounts } from "@/data/content";
 import {
@@ -18,11 +18,9 @@ import {
   CreditCard,
   Lock,
   CheckCircle2,
-  ArrowRight,
   Sparkles,
   Clock,
   Calendar,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 
@@ -43,6 +41,7 @@ function DonateContent() {
   const [selectedFrequency, setSelectedFrequency] = useState("once");
   const [selectedAmount, setSelectedAmount] = useState<number | null>(100);
   const [customAmount, setCustomAmount] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [donorInfo, setDonorInfo] = useState({
@@ -57,6 +56,7 @@ function DonateContent() {
   const parsedCustom = parseFloat(customAmount);
   const amount = customAmount && !isNaN(parsedCustom) ? parsedCustom : selectedAmount || 0;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDonate = async () => {
     // Validation
     if (amount < 1) {

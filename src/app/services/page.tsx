@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/FadeIn";
@@ -13,7 +13,6 @@ import {
   Clock,
   Phone,
   Mail,
-  Calendar,
   Heart,
   BookOpen,
   Users,

@@ -5,6 +5,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { upcomingEvents } from "@/data/content";
 import { ArrowRight, Calendar, Clock, MapPin, Repeat } from "lucide-react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";

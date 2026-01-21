@@ -17,7 +17,6 @@ import {
   Heart,
   ExternalLink,
   Trophy,
-  Users,
   ChevronDown,
 } from "lucide-react";
 

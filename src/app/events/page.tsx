@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/FadeIn";
+import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { upcomingEvents } from "@/data/content";
@@ -19,7 +19,6 @@ import {
   Grid,
   List,
   ArrowRight,
-  Users,
   Sparkles,
 } from "lucide-react";
 

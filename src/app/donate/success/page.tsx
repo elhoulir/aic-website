@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
@@ -21,7 +21,6 @@ interface VerificationResult {
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const sessionId = searchParams.get("session_id");
   const [isLoading, setIsLoading] = useState(true);
   const [verification, setVerification] = useState<VerificationResult | null>(null);

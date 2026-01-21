@@ -24,7 +24,6 @@ import {
   HelpCircle,
   Moon,
   Sun,
-  Sunrise,
   Sunset,
   Cloud,
 } from "lucide-react";

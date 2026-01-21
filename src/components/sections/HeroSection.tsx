@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSp
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, Play, ChevronLeft, ChevronRight } from "lucide-react";
-import { aicInfo, aicImages, prayerTimes, jumuahTimes } from "@/data/content";
+import { aicImages, prayerTimes, jumuahTimes } from "@/data/content";
 
 // Hero slides with different images and content
 const heroSlides = [
@@ -99,13 +99,14 @@ export function HeroSection() {
   const [direction, setDirection] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(new Array(heroSlides.length).fill(false));
-  const [nextPrayer, setNextPrayer] = useState({ name: "Dhuhr", time: prayerTimes.dhuhr.iqamah });
+  const [nextPrayer, setNextPrayer] = useState(() => getNextPrayer());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Mouse parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
   const handleImageLoad = useCallback((index: number) => {
@@ -132,7 +133,6 @@ export function HeroSection() {
   }, [mouseX, mouseY]);
 
   useEffect(() => {
-    setNextPrayer(getNextPrayer());
     const interval = setInterval(() => {
       setNextPrayer(getNextPrayer());
     }, 60000);

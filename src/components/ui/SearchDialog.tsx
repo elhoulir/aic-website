@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ArrowRight, Calendar, FileText, Users, Book, Clock } from "lucide-react";
 import Link from "next/link";
@@ -117,10 +117,17 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
     );
   }, [query]);
 
+  // Compute results directly from filteredResults
+  const computedResults = filteredResults();
+
   useEffect(() => {
-    setResults(filteredResults());
+    setResults(computedResults);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  useEffect(() => {
     setSelectedIndex(0);
-  }, [filteredResults]);
+  }, [query]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -149,11 +156,15 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
     };
   }, [open, results, selectedIndex, onClose]);
 
+  // Reset state when dialog opens using a ref to track previous open state
+  const prevOpenRef = useRef(open);
   useEffect(() => {
-    if (open) {
+    if (open && !prevOpenRef.current) {
+      // Dialog just opened
       setQuery("");
       setResults([]);
     }
+    prevOpenRef.current = open;
   }, [open]);
 
   return (

@@ -152,6 +152,7 @@ export function ImageCard({
   overlay = true,
   aspectRatio = "video",
   className,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   expandOnHover = false,
 }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false);

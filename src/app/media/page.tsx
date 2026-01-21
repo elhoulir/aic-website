@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { FadeIn, StaggerContainer, StaggerItem, StaggerGrid, StaggerGridItem, BlurFade } from "@/components/animations/FadeIn";
+import { FadeIn, StaggerContainer, StaggerItem, StaggerGrid, StaggerGridItem } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { galleryImages, announcements, aicInfo } from "@/data/content";
+import { galleryImages, aicInfo } from "@/data/content";
 import {
   Camera,
   Play,
@@ -16,7 +16,6 @@ import {
   Newspaper,
   ArrowRight,
   Calendar,
-  Tag,
   LayoutGrid,
   Image as ImageIcon,
   Video,
@@ -254,16 +253,26 @@ export default function MediaPage() {
     return image.category === selectedCategory;
   });
 
-  const openLightbox = (index: number) => {
+  // Handle body overflow when lightbox is open
+  useEffect(() => {
+    if (lightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [lightboxOpen]);
+
+  const openLightbox = useCallback((index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
-    document.body.style.overflow = "hidden";
-  };
+  }, []);
 
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setLightboxOpen(false);
-    document.body.style.overflow = "";
-  };
+  }, []);
 
   const goToNext = () => {
     setLightboxIndex((prev) => (prev + 1) % filteredImages.length);

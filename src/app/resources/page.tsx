@@ -21,7 +21,6 @@ import {
   Cloud,
   Sunset,
   Moon,
-  ExternalLink,
 } from "lucide-react";
 
 const prayers = [

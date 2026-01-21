@@ -126,6 +126,7 @@ interface ParallaxProps {
   className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function Parallax({ children, speed = 0.5, className = "" }: ParallaxProps) {
   return (
     <motion.div
@@ -211,6 +212,7 @@ interface CounterProps {
   className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function Counter({ value, suffix = "", prefix = "", duration = 2, className = "" }: CounterProps) {
   return (
     <motion.span

@@ -66,11 +66,9 @@ function getNextPrayer(): { name: string; time: string } {
 
 export function PrayerTimesBar() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [nextPrayer, setNextPrayer] = useState({ name: "Dhuhr", time: prayerTimes.dhuhr.iqamah });
+  const [nextPrayer, setNextPrayer] = useState(() => getNextPrayer());
 
   useEffect(() => {
-    setNextPrayer(getNextPrayer());
-
     // Update every minute
     const interval = setInterval(() => {
       setNextPrayer(getNextPrayer());
