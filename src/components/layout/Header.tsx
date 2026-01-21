@@ -180,14 +180,15 @@ export function Header() {
       {/* Main header */}
       <header
         className={cn(
-          "sticky top-0 z-50 transition-all duration-500",
+          "sticky top-0 z-[100] transition-all duration-300",
+          // Use solid background on mobile to prevent visibility issues with iOS Safari
           isScrolled
-            ? "bg-white/95 backdrop-blur-lg shadow-lg"
-            : "bg-neutral-900/90 backdrop-blur-sm"
+            ? "bg-white shadow-lg"
+            : "bg-neutral-900 lg:bg-neutral-900/90 lg:backdrop-blur-sm"
         )}
       >
-        <nav className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <Link href="/" onClick={handleLogoClick} className="flex items-center group relative h-12">
               {/* Logo for dark background (not scrolled) */}

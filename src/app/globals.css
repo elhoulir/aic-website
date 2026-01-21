@@ -96,6 +96,15 @@ body {
   overflow-x: hidden;
 }
 
+/* Ensure sticky header works correctly on iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific fixes */
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
