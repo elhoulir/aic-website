@@ -13,3 +13,9 @@ export const urlForImage = (source: any) => {
   }
   return imageBuilder.image(source).auto("format").fit("max");
 };
+
+// Helper function to build image URLs
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const urlFor = (source: any) => {
+  return imageBuilder.image(source).auto("format");
+};

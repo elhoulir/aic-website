@@ -15,6 +15,8 @@ export default defineConfig({
   projectId,
   dataset,
 
+  basePath: "/studio",
+
   plugins: [
     structureTool(),
     visionTool({ defaultApiVersion: "2024-01-01" }),
