@@ -25,6 +25,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Mock server-only package for tests
+      "server-only": path.resolve(__dirname, "./src/test/mocks/server-only.ts"),
     },
   },
 });

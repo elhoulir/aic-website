@@ -179,14 +179,14 @@ describe("Header", () => {
     // Verify About link exists with correct href
     const aboutLinks = screen.getAllByText("About");
     const aboutLinkWithHref = aboutLinks.find(
-      (link) => link.closest("a")?.getAttribute("href") === "/about"
+      (link: HTMLElement) => link.closest("a")?.getAttribute("href") === "/about"
     );
     expect(aboutLinkWithHref).toBeTruthy();
 
     // Verify Contact link exists with correct href
     const contactLinks = screen.getAllByText("Contact");
     const contactLinkWithHref = contactLinks.find(
-      (link) => link.closest("a")?.getAttribute("href") === "/contact"
+      (link: HTMLElement) => link.closest("a")?.getAttribute("href") === "/contact"
     );
     expect(contactLinkWithHref).toBeTruthy();
   });
@@ -210,7 +210,7 @@ describe("Header", () => {
     render(<Header />);
 
     const donateLinks = screen.getAllByRole("link", { name: /Donate/i });
-    const visibleDonateLink = donateLinks.find((link) =>
+    const visibleDonateLink = donateLinks.find((link: HTMLElement) =>
       link.getAttribute("href") === "/donate"
     );
     expect(visibleDonateLink).toBeTruthy();
