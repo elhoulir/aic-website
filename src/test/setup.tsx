@@ -7,6 +7,61 @@ afterEach(() => {
   cleanup();
 });
 
+// Mock next/headers (used by Sanity fetch)
+vi.mock("next/headers", () => ({
+  draftMode: () => ({ isEnabled: false }),
+  cookies: () => ({
+    get: vi.fn(),
+    set: vi.fn(),
+    delete: vi.fn(),
+  }),
+  headers: () => new Headers(),
+}));
+
+// Mock Sanity fetch functions - return empty arrays so fallback content is used
+vi.mock("@/sanity/lib/fetch", () => ({
+  getEvents: vi.fn().mockResolvedValue([]),
+  getEventsForStaticGeneration: vi.fn().mockResolvedValue([]),
+  getFeaturedEvents: vi.fn().mockResolvedValue([]),
+  getEventBySlug: vi.fn().mockResolvedValue(null),
+  getPastEvents: vi.fn().mockResolvedValue([]),
+  getAnnouncements: vi.fn().mockResolvedValue([]),
+  getAnnouncementBySlug: vi.fn().mockResolvedValue(null),
+  getAnnouncementsForStaticGeneration: vi.fn().mockResolvedValue([]),
+  getFeaturedAnnouncements: vi.fn().mockResolvedValue([]),
+  getUrgentAnnouncements: vi.fn().mockResolvedValue([]),
+  getPrograms: vi.fn().mockResolvedValue([]),
+  getServices: vi.fn().mockResolvedValue([]),
+  getServiceBySlug: vi.fn().mockResolvedValue(null),
+  getFeaturedServices: vi.fn().mockResolvedValue([]),
+  getDonationCauses: vi.fn().mockResolvedValue([]),
+  getDonationCauseBySlug: vi.fn().mockResolvedValue(null),
+  getFeaturedDonationCauses: vi.fn().mockResolvedValue([]),
+  getGalleryImages: vi.fn().mockResolvedValue([]),
+  getFeaturedGalleryImages: vi.fn().mockResolvedValue([]),
+  getTestimonials: vi.fn().mockResolvedValue([]),
+  getFaqs: vi.fn().mockResolvedValue([]),
+  getFaqsByCategory: vi.fn().mockResolvedValue([]),
+  getFeaturedFaqs: vi.fn().mockResolvedValue([]),
+  getEtiquette: vi.fn().mockResolvedValue([]),
+  getTourTypes: vi.fn().mockResolvedValue([]),
+  getTeamMembers: vi.fn().mockResolvedValue([]),
+  getTeamMemberBySlug: vi.fn().mockResolvedValue(null),
+  getTeamMembersByCategory: vi.fn().mockResolvedValue([]),
+  getFeaturedTeamMembers: vi.fn().mockResolvedValue([]),
+  getPageContent: vi.fn().mockResolvedValue([]),
+  getPageContentBySlug: vi.fn().mockResolvedValue(null),
+  getPageContentByType: vi.fn().mockResolvedValue(null),
+  getNavigationPages: vi.fn().mockResolvedValue([]),
+  getResources: vi.fn().mockResolvedValue([]),
+  getResourceBySlug: vi.fn().mockResolvedValue(null),
+  getResourcesByCategory: vi.fn().mockResolvedValue([]),
+  getResourcesByType: vi.fn().mockResolvedValue([]),
+  getFeaturedResources: vi.fn().mockResolvedValue([]),
+  getSiteSettings: vi.fn().mockResolvedValue(null),
+  getPrayerSettings: vi.fn().mockResolvedValue(null),
+}));
+
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
