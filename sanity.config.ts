@@ -57,7 +57,7 @@ export default defineConfig({
       previewUrl: {
         // Preview URL resolver for Presentation tool
         previewMode: {
-          enable: `${baseUrl}/api/draft`,
+          enable: "/api/draft-mode/enable",
         },
         // Resolve URLs for different document types
         resolve: (doc: { _type?: string; slug?: { current?: string } } | null) => {
