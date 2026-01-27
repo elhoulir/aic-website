@@ -55,7 +55,7 @@ export default defineConfig({
     structureTool(),
     presentationTool({
       previewUrl: {
-        // Preview URL resolver for Presentation tool
+        initial: baseUrl,
         previewMode: {
           enable: "/api/draft-mode/enable",
         },
