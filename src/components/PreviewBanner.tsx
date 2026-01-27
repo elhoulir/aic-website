@@ -6,7 +6,7 @@ export function PreviewBanner() {
   const router = useRouter();
 
   const handleDisable = async () => {
-    await fetch("/api/disable-draft");
+    await fetch("/api/disable-draft", { method: "POST" });
     router.refresh();
   };
 

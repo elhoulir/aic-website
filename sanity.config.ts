@@ -8,28 +8,8 @@ import { schemaTypes } from "./src/sanity/schemas";
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
-// TODO: Change to https://australianislamiccentre.org when ready to go live
-const baseUrl = "https://aic-website.vercel.app";
-// Note: Preview secret must use NEXT_PUBLIC_ prefix to be accessible in client-side code
-const previewSecret = process.env.NEXT_PUBLIC_SANITY_PREVIEW_SECRET || "";
-
-// Map document types to their preview URLs
-const previewUrlMap: Record<string, (slug?: string) => string> = {
-  event: (slug) => `/events${slug ? `/${slug}` : ""}`,
-  service: () => "/services",
-  announcement: () => "/announcements",
-  donationCause: () => "/donate",
-  galleryImage: () => "/media",
-  testimonial: () => "/",
-  faq: () => "/visit",
-  etiquette: () => "/visit",
-  tourType: () => "/visit",
-  siteSettings: () => "/",
-  prayerSettings: () => "/worshippers",
-  teamMember: () => "/about",
-  pageContent: () => "/",
-  resource: () => "/resources",
-};
+// Base URL for the site (safe to expose)
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://aic-website.vercel.app";
 
 export default defineConfig({
   name: "australian-islamic-centre",
@@ -51,24 +31,26 @@ export default defineConfig({
 
   document: {
     // Add a "Preview" action to document types
+    // Fetches preview URL from API to keep secret server-side
     productionUrl: async (prev, context) => {
       const { document } = context;
       const docType = document._type;
-
-      // Get the URL mapper for this document type
-      const urlMapper = previewUrlMap[docType];
-      if (!urlMapper) return prev;
-
-      // Get slug if available
       const slug = (document.slug as { current?: string })?.current;
-      const path = urlMapper(slug);
 
-      // Build the preview URL with draft mode
-      const previewUrl = new URL("/api/draft", baseUrl);
-      previewUrl.searchParams.set("secret", previewSecret);
-      previewUrl.searchParams.set("slug", path);
+      try {
+        const response = await fetch(`${baseUrl}/api/preview-url`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ documentType: docType, slug }),
+        });
 
-      return previewUrl.toString();
+        if (!response.ok) return prev;
+
+        const data = await response.json();
+        return data.url || prev;
+      } catch {
+        return prev;
+      }
     },
   },
 });
