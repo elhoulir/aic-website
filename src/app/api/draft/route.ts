@@ -12,6 +12,11 @@ export async function GET(request: NextRequest) {
     return new Response("Invalid secret", { status: 401 });
   }
 
+  // Validate slug is a relative path only (prevent open redirect attacks)
+  if (!slug.startsWith("/") || slug.startsWith("//") || slug.includes("://")) {
+    return new Response("Invalid redirect path", { status: 400 });
+  }
+
   // Enable Draft Mode
   const draft = await draftMode();
   draft.enable();

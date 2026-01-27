@@ -29,18 +29,20 @@ export async function GET(request: NextRequest) {
 
     // Check if the payment was successful
     if (session.payment_status === 'paid' || session.status === 'complete') {
+      // Only return non-sensitive confirmation data
+      // Don't expose: email, metadata (contains donor personal info)
       return NextResponse.json({
         verified: true,
         amount: session.amount_total ? session.amount_total / 100 : 0,
         currency: session.currency?.toUpperCase() || 'AUD',
-        email: session.customer_email,
-        metadata: session.metadata,
+        // Return only safe metadata fields (cause info, not personal data)
+        cause: session.metadata?.cause || null,
+        causeTitle: session.metadata?.causeTitle || null,
       });
     }
 
-    return NextResponse.json({ verified: false, status: session.status });
-  } catch (error) {
-    console.error('Session verification error:', error);
+    return NextResponse.json({ verified: false });
+  } catch {
     return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
   }
 }

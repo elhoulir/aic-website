@@ -37,8 +37,7 @@ export async function POST(request: NextRequest) {
 
   try {
     event = getStripe().webhooks.constructEvent(body, signature, getWebhookSecret());
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err);
+  } catch {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
@@ -47,13 +46,12 @@ export async function POST(request: NextRequest) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Log successful donation
+      // Log only non-sensitive operational data
       console.log('Donation successful:', {
         sessionId: session.id,
         amount: session.amount_total,
         currency: session.currency,
-        customerEmail: session.customer_email,
-        metadata: session.metadata,
+        cause: session.metadata?.cause,
       });
 
       // Here you could:
@@ -71,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.error('Payment failed:', paymentIntent.id);
+      console.log('Payment failed:', paymentIntent.id);
       break;
     }
 
@@ -88,7 +86,10 @@ export async function POST(request: NextRequest) {
     }
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      // Don't log unhandled events in production
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Unhandled event type: ${event.type}`);
+      }
   }
 
   return NextResponse.json({ received: true });

@@ -11,12 +11,8 @@ interface VerificationResult {
   verified: boolean;
   amount?: number;
   currency?: string;
-  email?: string;
-  metadata?: {
-    cause?: string;
-    causeTitle?: string;
-    frequency?: string;
-  };
+  cause?: string;
+  causeTitle?: string;
 }
 
 function SuccessContent() {
@@ -201,26 +197,15 @@ function SuccessContent() {
                   <span className="font-medium">Amount:</span> ${verification.amount.toFixed(2)} {verification.currency}
                 </p>
               )}
-              {verification.metadata?.causeTitle && (
+              {verification.causeTitle && (
                 <p>
-                  <span className="font-medium">Cause:</span> {verification.metadata.causeTitle}
-                </p>
-              )}
-              {verification.metadata?.frequency && verification.metadata.frequency !== 'once' && (
-                <p>
-                  <span className="font-medium">Frequency:</span>{" "}
-                  <span className="capitalize">{verification.metadata.frequency}</span>
+                  <span className="font-medium">Cause:</span> {verification.causeTitle}
                 </p>
               )}
             </div>
 
             <p className="text-gray-600 text-sm">
-              A confirmation email has been sent to{" "}
-              {verification.email ? (
-                <span className="font-medium">{verification.email}</span>
-              ) : (
-                "your email address"
-              )}.
+              A confirmation email will be sent to your email address.
               You will receive a tax-deductible receipt shortly.
             </p>
           </motion.div>
