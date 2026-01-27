@@ -8,9 +8,8 @@ import { schemaTypes } from "./src/sanity/schemas";
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
-// Base URL for preview - temporarily using aic-website.vercel.app until production is live
-const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://aic-website.vercel.app";
+// TODO: Change to https://australianislamiccentre.org when ready to go live
+const baseUrl = "https://aic-website.vercel.app";
 // Note: Preview secret must use NEXT_PUBLIC_ prefix to be accessible in client-side code
 const previewSecret = process.env.NEXT_PUBLIC_SANITY_PREVIEW_SECRET || "";
 
